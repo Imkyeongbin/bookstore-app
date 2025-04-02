@@ -8,7 +8,7 @@
 
       <div class="search-group">
         <input v-model="searchKeyword" @keyup.enter="searchBooks" placeholder="제목 또는 저자 검색" />
-        <button @click="searchBooks">검색</button>
+        <button @click="searchBooks" :disabled="isLoading">검색</button>
         <button v-if="searchKeyword" @click="resetSearch">초기화</button>
       </div>
     </div>
@@ -96,9 +96,12 @@ const prevPage = () => {
   }
 }
 
-const searchBooks = () => {
-  page.value = 1  // 검색 시 1페이지부터
-  loadBooks()
+const isLoading = ref(false)
+
+const searchBooks = async () => {
+  isLoading.value = true
+  await loadBooks()
+  isLoading.value = false
 }
 
 const resetSearch = () => {
