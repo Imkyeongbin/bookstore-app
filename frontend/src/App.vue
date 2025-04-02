@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Bookstore App</h1>
+    <h1>📚 Bookstore App</h1>
     <p>{{ message }}</p>
   </div>
 </template>
@@ -15,4 +15,3 @@ onMounted(async () => {
   message.value = res.data.message
 })
 </script>
-EOF

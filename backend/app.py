@@ -1,7 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder="static", static_url_path="/")
+app = Flask(__name__, static_folder='static', static_url_path='/')
 CORS(app)
 
 @app.route("/api/hello")
@@ -10,7 +10,7 @@ def hello():
 
 @app.route("/")
 def index():
-    return app.send_static_file("index.html")
+    return send_from_directory(app.static_folder, "index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
