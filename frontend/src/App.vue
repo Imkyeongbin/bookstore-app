@@ -1,17 +1,19 @@
 <template>
   <div>
-    <h1>📚 Bookstore App</h1>
-    <p>{{ message }}</p>
+    <h1>📚 Bookstore</h1>
+    <BookForm @book-added="refreshBooks" />
+    <BookList ref="bookListRef" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import BookForm from './components/BookForm.vue'
+import BookList from './components/BookList.vue'
+import { ref } from 'vue'
 
-const message = ref('')
-onMounted(async () => {
-  const res = await axios.get('/api/hello')
-  message.value = res.data.message
-})
+const bookListRef = ref(null)
+
+const refreshBooks = () => {
+  bookListRef.value?.loadBooks()
+}
 </script>

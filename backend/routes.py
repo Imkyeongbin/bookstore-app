@@ -26,3 +26,15 @@ def get_books():
         "page": pagination.page,
         "pages": pagination.pages
     })
+
+@api_bp.route("/books", methods=["POST"])
+def create_book():
+    data = request.json
+    new_book = Book(
+        title=data.get('title'),
+        author=data.get('author'),
+        quantity=data.get('quantity', 1)
+    )
+    db.session.add(new_book)
+    db.session.commit()
+    return jsonify({"message": "Book added successfully."}), 201
