@@ -38,3 +38,30 @@ def create_book():
     db.session.add(new_book)
     db.session.commit()
     return jsonify({"message": "Book added successfully."}), 201
+
+
+@api_bp.route("/books/<int:book_id>", methods=["DELETE"])
+def delete_book(book_id):
+    book = Book.query.get(book_id)
+    if book is None:
+        return jsonify({"error": "Book not found"}), 404
+
+    db.session.delete(book)
+    db.session.commit()
+    return jsonify({"message": "Book deleted successfully."})
+
+
+@api_bp.route("/books/<int:book_id>", methods=["PUT"])
+def update_book(book_id):
+    book = Book.query.get(book_id)
+    if book is None:
+        return jsonify({"error": "Book not found"}), 404
+
+    data = request.json
+    book.title = data.get('title', book.title)
+    book.author = data.get('author', book.author)
+    book.quantity = data.get('quantity', book.quantity)
+    db.session.commit()
+
+    return jsonify({"message": "Book updated successfully."})
+

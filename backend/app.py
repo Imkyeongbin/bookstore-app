@@ -21,12 +21,12 @@ def create_tables():
     # 책 테이블에 데이터가 없을 경우만 더미 데이터 추가
     if Book.query.first() is None:
         sample_books = [
-            Book(title="Harry Potter", author="J.K. Rowling", quantity=3),
-            Book(title="The Hobbit", author="J.R.R. Tolkien", quantity=5),
-            Book(title="1984", author="George Orwell", quantity=2)
+            Book(title=f"Book {i+1}", author=f"Author {i+1}", quantity=(i % 5) + 1)
+            for i in range(23)
         ]
         db.session.add_all(sample_books)
         db.session.commit()
+
 
 
 if __name__ == "__main__":
