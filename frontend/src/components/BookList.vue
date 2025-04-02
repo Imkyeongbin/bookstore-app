@@ -57,6 +57,15 @@ const isEditing = ref(false)
 const selectedBook = ref(null)
 
 const loadBooks = async () => {
+  const cacheKey = `books_${searchKeyword.value}_page_${page.value}`
+  const cached = sessionStorage.getItem(cacheKey)
+  if (cached) {
+    const data = JSON.parse(cached)
+    books.value = data.books
+    totalPages.value = data.pages
+    return
+  }
+
   try {
     const res = await axios.get('/api/books', {
       params: {
@@ -67,6 +76,7 @@ const loadBooks = async () => {
     })
     books.value = res.data.books
     totalPages.value = res.data.pages
+    sessionStorage.setItem(cacheKey, JSON.stringify(res.data))
   } catch (err) {
     console.error('책 목록 불러오기 실패:', err)
   }
