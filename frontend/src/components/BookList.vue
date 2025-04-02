@@ -1,11 +1,17 @@
 <template>
   <div>
     <h2>📖 책 목록</h2>
+    <div class="top-bar">
+      <router-link to="/new">
+        <button>➕ 새 책 등록</button>
+      </router-link>
 
-    <!-- 🔍 검색 입력 -->
-    <input v-model="searchKeyword" @keyup.enter="searchBooks" placeholder="제목 또는 저자 검색" />
-    <button @click="searchBooks">검색</button>
-    <button v-if="searchKeyword" @click="resetSearch">초기화</button>
+      <div class="search-group">
+        <input v-model="searchKeyword" @keyup.enter="searchBooks" placeholder="제목 또는 저자 검색" />
+        <button @click="searchBooks">검색</button>
+        <button v-if="searchKeyword" @click="resetSearch">초기화</button>
+      </div>
+    </div>
 
     <!-- 수정 폼 -->
     <BookEditForm
@@ -18,11 +24,13 @@
     <!-- 목록 -->
     <ul v-else-if="books.length > 0">
       <li v-for="book in books" :key="book.id">
-        <strong>{{ book.title }}</strong> by {{ book.author }} ({{ book.quantity }}권)
-        <button @click="deleteBook(book.id)">❌ 삭제</button>
-        <button @click="editBook(book)">✏️ 수정</button>
+        <router-link :to="`/books/${book.id}`">
+          {{ book.title }}
+        </router-link>
+        <span> - {{ book.author }}</span>
       </li>
     </ul>
+
 
     <p v-else>불러오는 중...</p>
     <!-- 페이지네이션 -->
@@ -120,4 +128,18 @@ defineExpose({ loadBooks })
   gap: 1rem;
   align-items: center;
 }
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap; /* 좁은 화면 대응 */
+}
+
+.search-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 </style>

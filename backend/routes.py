@@ -26,6 +26,20 @@ def get_books():
         "page": pagination.page,
         "pages": pagination.pages
     })
+    
+@api_bp.route("/books/<int:book_id>", methods=["GET"])
+def get_book(book_id):
+    book = Book.query.get(book_id)
+    if book is None:
+        return jsonify({"error": "Book not found"}), 404
+    return jsonify({
+        "id": book.id,
+        "title": book.title,
+        "author": book.author,
+        "quantity": book.quantity
+    })
+
+
 
 @api_bp.route("/books", methods=["POST"])
 def create_book():
