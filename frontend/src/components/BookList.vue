@@ -2,6 +2,11 @@
   <div>
     <h2>📖 책 목록</h2>
 
+    <!-- 🔍 검색 입력 -->
+    <input v-model="searchKeyword" @keyup.enter="searchBooks" placeholder="제목 또는 저자 검색" />
+    <button @click="searchBooks">검색</button>
+    <button v-if="searchKeyword" @click="resetSearch">초기화</button>
+
     <!-- 수정 폼 -->
     <BookEditForm
       v-if="isEditing"
@@ -20,6 +25,12 @@
     </ul>
 
     <p v-else>불러오는 중...</p>
+    <!-- 페이지네이션 -->
+    <div v-if="totalPages > 1" class="pagination">
+      <button @click="prevPage" :disabled="page <= 1">← 이전</button>
+      <span>페이지 {{ page }} / {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="page >= totalPages">다음 →</button>
+    </div>
   </div>
 </template>
 
@@ -29,16 +40,52 @@ import axios from 'axios'
 import BookEditForm from './BookEditForm.vue'
 
 const books = ref([])
+const page = ref(1)
+const perPage = 10
+const totalPages = ref(1)
+const searchKeyword = ref('')  // 🔍 검색어 상태
+
 const isEditing = ref(false)
 const selectedBook = ref(null)
 
 const loadBooks = async () => {
   try {
-    const res = await axios.get('/api/books')
+    const res = await axios.get('/api/books', {
+      params: {
+        page: page.value,
+        per_page: perPage,
+        search: searchKeyword.value
+      }
+    })
     books.value = res.data.books
+    totalPages.value = res.data.pages
   } catch (err) {
     console.error('책 목록 불러오기 실패:', err)
   }
+}
+
+const nextPage = () => {
+  if (page.value < totalPages.value) {
+    page.value++
+    loadBooks()
+  }
+}
+
+const prevPage = () => {
+  if (page.value > 1) {
+    page.value--
+    loadBooks()
+  }
+}
+
+const searchBooks = () => {
+  page.value = 1  // 검색 시 1페이지부터
+  loadBooks()
+}
+
+const resetSearch = () => {
+  searchKeyword.value = ''
+  loadBooks()
 }
 
 const deleteBook = async (id) => {
@@ -65,3 +112,12 @@ const handleEdited = async () => {
 onMounted(loadBooks)
 defineExpose({ loadBooks })
 </script>
+
+<style scoped>
+.pagination {
+  margin-top: 16px;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+</style>
