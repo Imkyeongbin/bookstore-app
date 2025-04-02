@@ -1,10 +1,17 @@
 from flask import Flask
 from flask_cors import CORS
 from models import db, Book
-from routes import api_bp
+from routes import api_bp, cache  # cache도 import
 
 app = Flask(__name__)
 CORS(app)
+
+# ✅ 캐시 설정 추가
+app.config['CACHE_TYPE'] = 'SimpleCache'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # 기본 캐시 시간 (초)
+
+# ✅ 캐시 초기화
+cache.init_app(app)
 
 # SQLite DB 설정
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -26,8 +33,6 @@ def create_tables():
         ]
         db.session.add_all(sample_books)
         db.session.commit()
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

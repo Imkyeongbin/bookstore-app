@@ -1,9 +1,13 @@
 from flask import Blueprint, request, jsonify
 from models import db, Book
+from flask_caching import Cache
+
+cache = Cache()  # config 제거
 
 api_bp = Blueprint("api", __name__)
 
 @api_bp.route("/books", methods=["GET"])
+@cache.cached(timeout=30, query_string=True)
 def get_books():
     # 검색어 & 페이지 처리
     search = request.args.get('search', '', type=str)
