@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 from models import db, Book
 from routes import api_bp, cache, limiter  # cache도 import
@@ -7,17 +7,20 @@ from dotenv import load_dotenv  # ✅ 추가
 
 load_dotenv()  # ✅ .env 로드
 
-app = Flask(__name__)
-# CORS(app)
+app = Flask(__name__, static_folder="dist/assets", template_folder="dist")
 # ✅ 여기에 정확히 프론트 주소만 허용
 # CORS(app, origins=["https://bookstore-app-fe.onrender.com"])
-frontend_origin = os.environ.get("FRONTEND_ORIGIN", "").strip()  # 👈 줄바꿈 제거
-CORS(app, origins=[frontend_origin])
-
+# frontend_origin = os.environ.get("FRONTEND_ORIGIN", "").strip()  # 👈 줄바꿈 제거
+# CORS(app, origins=[frontend_origin])
+CORS(app)
 # ✅ 기본 라우트 추가 (Render 헬스 체크용 등)
-@app.route("/")
-def index():
-    return "✅ Server is running!"
+
+# ✅ 이 라우트는 정적 파일 요청 이후에 매칭되게 해야 함
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def catch_all(path):
+    return render_template("index.html")
+
 
 # ✅ 캐시 설정 추가
 app.config['CACHE_TYPE'] = 'SimpleCache'
