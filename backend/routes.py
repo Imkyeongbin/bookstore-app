@@ -2,18 +2,14 @@ from flask import Blueprint, request, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from models import db, Book
-from flask_caching import Cache
-
-cache = Cache()  # config 제거
 
 api_bp = Blueprint("api", __name__)
 limiter = Limiter(key_func=get_remote_address)
 
+# 📚 목록 조회 (캐싱 제거됨)
 @api_bp.route("/books", methods=["GET"])
 @limiter.limit("30 per minute")
-@cache.cached(timeout=30, query_string=True)
 def get_books():
-    # 검색어 & 페이지 처리
     search = request.args.get('search', '', type=str)
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
@@ -34,19 +30,14 @@ def get_books():
         "page": pagination.page,
         "pages": pagination.pages
     })
-    
+
+
 @api_bp.route("/books/<int:book_id>", methods=["GET"])
 def get_book(book_id):
     book = Book.query.get(book_id)
     if book is None:
         return jsonify({"error": "Book not found"}), 404
-    return jsonify({
-        "id": book.id,
-        "title": book.title,
-        "author": book.author,
-        "quantity": book.quantity
-    })
-
+    return jsonify(book.to_dict())
 
 
 @api_bp.route("/books", methods=["POST"])
@@ -64,16 +55,13 @@ def create_book():
 
 @api_bp.route('/books/<int:book_id>', methods=['DELETE'])
 def delete_book(book_id):
-    try:
-        book = Book.query.get(book_id)
-        if not book:
-            return jsonify({"error": "해당 책이 없습니다"}), 404
-        db.session.delete(book)
-        db.session.commit()
-        return jsonify({"message": "삭제 성공"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    book = Book.query.get(book_id)
+    if not book:
+        return jsonify({"error": "해당 책이 없습니다"}), 404
 
+    db.session.delete(book)
+    db.session.commit()
+    return jsonify({"message": "삭제 성공"}), 200
 
 
 @api_bp.route("/books/<int:book_id>", methods=["PUT"])
@@ -89,4 +77,3 @@ def update_book(book_id):
     db.session.commit()
 
     return jsonify({"message": "Book updated successfully."})
-
