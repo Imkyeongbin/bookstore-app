@@ -7,7 +7,11 @@
       </router-link>
 
       <div class="search-group">
-        <input v-model="searchKeyword" @keyup.enter="searchBooks" placeholder="제목 또는 저자 검색" />
+        <input
+          v-model="searchKeyword"
+          @keyup.enter="searchBooks"
+          placeholder="제목 또는 저자 검색"
+        />
         <button @click="searchBooks" :disabled="isLoading">검색</button>
         <button v-if="searchKeyword" @click="resetSearch">초기화</button>
       </div>
@@ -20,7 +24,6 @@
       @edited="handleEdited"
       @cancel="isEditing = false"
     />
-
 
     <!-- 목록 -->
     <ul v-else-if="books.length > 0">
@@ -49,28 +52,18 @@ import axios from '@/lib/axios'
 import BookEditForm from './BookEditForm.vue'
 import type { Book } from '@/types/book'
 
-// 📦 상태 정의
 const books = ref<Book[]>([])
-const page = ref<number>(1)
+const page = ref(1)
 const perPage = 10
-const totalPages = ref<number>(1)
+const totalPages = ref(1)
 const searchKeyword = ref<string>('')
 
-const isEditing = ref<boolean>(false)
+const isEditing = ref(false)
 const selectedBook = ref<Book | null>(null)
-const isLoading = ref<boolean>(false)
+const isLoading = ref(false)
 
-// 📖 목록 불러오기
+// 📖 항상 최신 목록 불러오기
 const loadBooks = async (): Promise<void> => {
-  const cacheKey = `books_${searchKeyword.value}_page_${page.value}`
-  const cached = sessionStorage.getItem(cacheKey)
-  if (cached) {
-    const data: { books: Book[]; pages: number } = JSON.parse(cached)
-    books.value = data.books
-    totalPages.value = data.pages
-    return
-  }
-
   try {
     const res = await axios.get('/api/books', {
       params: {
@@ -81,7 +74,6 @@ const loadBooks = async (): Promise<void> => {
     })
     books.value = res.data.books
     totalPages.value = res.data.pages
-    sessionStorage.setItem(cacheKey, JSON.stringify(res.data))
   } catch (err) {
     console.error('책 목록 불러오기 실패:', err)
   }
@@ -136,24 +128,3 @@ const handleEdited = async (): Promise<void> => {
 onMounted(loadBooks)
 defineExpose({ loadBooks })
 </script>
-
-<style scoped>
-.pagination {
-  margin-top: 16px;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-.search-group {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-</style>
