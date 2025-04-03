@@ -5,35 +5,37 @@
     <!-- 상세 페이지용 라우팅 영역 -->
     <router-view />
 
-    <!-- 리스트 + 등록 구역 -->
-    <!-- <div v-if="!showForm">
+    <!-- 리스트 + 등록 구역 (라우터로 분리됐으므로 주석 처리) -->
+    <!--
+    <div v-if="!showForm">
       <button @click="showForm = true">➕ 새 책 등록</button>
       <BookList ref="bookListRef" />
-    </div> -->
+    </div>
 
-    <!-- <div v-else>
+    <div v-else>
       <BookForm @book-added="handleBookAdded" />
       <button @click="showForm = false">← 돌아가기</button>
-    </div> -->
+    </div>
+    -->
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, type Ref } from 'vue'
 // import BookForm from './components/BookForm.vue'
 // import BookList from './components/BookList.vue'
 
-const bookListRef = ref(null)
-const showForm = ref(false)
+const bookListRef = ref<InstanceType<any> | null>(null)  // 또는 정확한 타입 지정 가능
+const showForm = ref<boolean>(false)
 
-const refreshBooks = () => {
-  bookListRef.value?.loadBooks()
+const refreshBooks = (): void => {
+  bookListRef.value?.loadBooks?.()
 }
 
-const handleBookAdded = () => {
+const handleBookAdded = (): void => {
   showForm.value = false
   refreshBooks()
 }
-// console.log('VITE_API_URL:', import.meta.env.VITE_API_URL)
+
 defineExpose({ refreshBooks })
 </script>
