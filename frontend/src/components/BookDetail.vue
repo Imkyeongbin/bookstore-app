@@ -25,18 +25,18 @@
   <p v-else>불러오는 중...</p>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-// import axios from 'axios'
 import axios from '@/lib/axios'
+import type { Book } from '@/types/book'
 
 const route = useRoute()
 const router = useRouter()
-const book = ref(null)
+
+const book = ref<Book | null>(null)
 const isEditing = ref(false)
 
-// ✅ 누락된 함수 정의 추가!
 const fetchBook = async () => {
   try {
     const res = await axios.get(`/api/books/${route.params.id}`)
@@ -46,13 +46,13 @@ const fetchBook = async () => {
   }
 }
 
-// ✅ 초기 로딩
 onMounted(fetchBook)
 
-// ✅ URL 바뀔 때마다 다시 불러오기
+// URL이 바뀌면 다시 로드
 watch(() => route.params.id, fetchBook)
 
 const updateBook = async () => {
+  if (!book.value) return
   try {
     await axios.put(`/api/books/${book.value.id}`, book.value)
     isEditing.value = false
@@ -62,6 +62,7 @@ const updateBook = async () => {
 }
 
 const deleteBook = async () => {
+  if (!book.value) return
   if (!confirm("정말 삭제하시겠습니까?")) return
   try {
     await axios.delete(`/api/books/${book.value.id}`)

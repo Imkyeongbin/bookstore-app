@@ -10,25 +10,37 @@
     </form>
   </div>
 </template>
-  
-<script setup>
-  import { ref, watch } from 'vue'
-  // import axios from 'axios'
-  import axios from '@/lib/axios'
-  
-  const props = defineProps({
-    bookToEdit: Object
-  })
-  const emit = defineEmits(['edited', 'cancel'])
-  
-  const book = ref(null)
-  
-  watch(() => props.bookToEdit, (val) => {
-    book.value = { ...val }  // props 복사본
-  }, { immediate: true })
-  
-  const submitForm = async () => {
-    console.log("📤 수정 요청 시작:", book.value)  // ← 추가
+
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+// import axios from 'axios'
+import axios from '@/lib/axios'
+import type { Book } from '@/types/book'  // ✅ 타입 정의 (없으면 위에서 직접 정의 가능)
+
+// props 타입 정의
+const props = defineProps<{
+  bookToEdit: Book
+}>()
+
+const emit = defineEmits<{
+  (e: 'edited'): void
+  (e: 'cancel'): void
+}>()
+
+// book 복사본
+const book = ref<Book | null>(null)
+
+watch(
+  () => props.bookToEdit,
+  (val) => {
+    book.value = { ...val }
+  },
+  { immediate: true }
+)
+
+const submitForm = async () => {
+  if (!book.value) return
+  console.log("📤 수정 요청 시작:", book.value)
 
   try {
     await axios.put(`/api/books/${book.value.id}`, book.value)
@@ -39,7 +51,5 @@
   }
 }
 
-  
-  const cancelEdit = () => emit('cancel')
-  </script>
-  
+const cancelEdit = () => emit('cancel')
+</script>

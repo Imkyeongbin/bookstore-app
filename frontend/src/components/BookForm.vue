@@ -19,18 +19,19 @@
   </form>
 </template>
   
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-// import axios from 'axios'
 import axios from '@/lib/axios'
 
 const router = useRouter()
-const title = ref('')
-const author = ref('')
-const quantity = ref(1)
 
-const submitForm = async () => {
+const title = ref<string>('')
+const author = ref<string>('')
+const quantity = ref<number>(1)
+const message = ref<string>('')
+
+const submitForm = async (): Promise<void> => {
   try {
     await axios.post('/api/books', {
       title: title.value,
@@ -39,14 +40,13 @@ const submitForm = async () => {
     })
     alert('등록 완료!')
     router.push('/')  // 목록으로 이동
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('등록 실패:', err)
+    message.value = '등록 중 오류가 발생했습니다.'
   }
 }
 
-const cancel = () => {
-  router.push('/')  // ← 목록 페이지로 이동
+const cancel = (): void => {
+  router.push('/')  // 목록으로 이동
 }
 </script>
-
-  
