@@ -36,11 +36,12 @@ bookstore-app/
 
 
 ## 🚀 설치 및 실행
+
 ### 📁 1. 레포 클론
 
 git clone https://github.com/yourname/bookstore-app.git
 cd bookstore-app
-### 🧱 2. 백엔드 실행 (Flask)
+### 🧱 2. 백엔드 실행 (Flask)(Python 3.8버전을 권장합니다.)
 
 cd backend
 python3 -m venv venv
@@ -58,7 +59,7 @@ python app.py
 gunicorn app:app --bind 0.0.0.0:8000
 기본 SQLite 데이터베이스는 앱 최초 실행 시 자동 생성되며 더미 데이터도 함께 삽입됩니다.
 
-### 🌐 3. 프론트엔드 실행 (Vue + Vite)
+### 🌐 3. 프론트엔드 실행 (Vue + Vite) (Node 16 버전을 권장합니다. )
 
 cd frontend
 npm install
@@ -70,14 +71,23 @@ echo "VITE_API_URL=http://localhost:5000" > .env
 npm run dev
 접속: http://localhost:5173
 
-🏗️ 빌드 및 배포
-📦 프론트엔드 빌드
+###🏗️ 빌드 및 배포
+####📦 프론트엔드 빌드
 
 cd frontend
 npm run build
 dist/ 폴더를 Flask backend/dist/ 경로로 복사
 
 Flask에서 static 파일을 제공하도록 설정되어 있어야 함:
+
+이후
+`python app.py`
+
+혹은
+
+`gunicorn app:app --bind 0.0.0.0:8000` 
+
+명령으로 플라스크 백엔드를 실행시켜 확인하도록 합니다.
 
 
 ### ✏️ 주요 기능
