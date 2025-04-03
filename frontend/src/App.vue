@@ -34,6 +34,6 @@ const handleBookAdded = () => {
   showForm.value = false
   refreshBooks()
 }
-
+// console.log('VITE_API_URL:', import.meta.env.VITE_API_URL)
 defineExpose({ refreshBooks })
 </script>
