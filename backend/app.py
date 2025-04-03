@@ -11,7 +11,8 @@ app = Flask(__name__)
 # CORS(app)
 # ✅ 여기에 정확히 프론트 주소만 허용
 # CORS(app, origins=["https://bookstore-app-fe.onrender.com"])
-CORS(app, origins=[os.environ.get("FRONTEND_ORIGIN")])
+frontend_origin = os.environ.get("FRONTEND_ORIGIN", "").strip()  # 👈 줄바꿈 제거
+CORS(app, origins=[frontend_origin])
 
 # ✅ 기본 라우트 추가 (Render 헬스 체크용 등)
 @app.route("/")
