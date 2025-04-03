@@ -1,10 +1,17 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 from models import db, Book
 from routes import api_bp, cache, limiter  # cache도 import
+from dotenv import load_dotenv  # ✅ 추가
+
+load_dotenv()  # ✅ .env 로드
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
+# ✅ 여기에 정확히 프론트 주소만 허용
+# CORS(app, origins=["https://bookstore-app-fe.onrender.com"])
+CORS(app, origins=[os.environ.get("FRONTEND_ORIGIN")])
 
 # ✅ 기본 라우트 추가 (Render 헬스 체크용 등)
 @app.route("/")
