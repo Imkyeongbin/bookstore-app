@@ -13,7 +13,8 @@
   
 <script setup>
   import { ref, watch } from 'vue'
-  import axios from 'axios'
+  // import axios from 'axios'
+  import axios from '@/lib/axios'
   
   const props = defineProps({
     bookToEdit: Object

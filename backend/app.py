@@ -6,6 +6,11 @@ from routes import api_bp, cache, limiter  # cache도 import
 app = Flask(__name__)
 CORS(app)
 
+# ✅ 기본 라우트 추가 (Render 헬스 체크용 등)
+@app.route("/")
+def index():
+    return "✅ Server is running!"
+
 # ✅ 캐시 설정 추가
 app.config['CACHE_TYPE'] = 'SimpleCache'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # 기본 캐시 시간 (초)
