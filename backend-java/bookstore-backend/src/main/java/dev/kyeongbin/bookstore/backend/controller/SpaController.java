@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SpaController {
     @RequestMapping(value = {"/", "/{path:[^\\.]*}"})
     public String forward(){
-        return "forward:/index.html";
+        // ✅ "forward:/index.html" -> "forward:/dist/index.html" 로 수정
+        return "forward:/dist/index.html";
     }
 }
