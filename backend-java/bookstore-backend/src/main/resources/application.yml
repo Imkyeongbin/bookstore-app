@@ -1,5 +1,5 @@
 server:
-  port: 5000 # Flask 포트와 동일하게 설정
+  port: 8080 # Flask 포트와 동일하게 설정
 
 spring:
   # H2 데이터베이스 설정 (SQLite 대체)
