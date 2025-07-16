@@ -1,0 +1,38 @@
+server:
+  port: 8000 # Flask 포트와 동일하게 설정
+
+spring:
+  # H2 데이터베이스 설정 (SQLite 대체)
+  datasource:
+    url: jdbc:h2:file:./db;AUTO_SERVER=TRUE # 파일 기반 DB로 설정 (서버 재시작해도 데이터 유지)
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  # JPA (SQLAlchemy 대체) 설정
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update # 애플리케이션 시작 시 DB 스키마 자동 업데이트
+    show-sql: true # 실행되는 SQL 쿼리를 로그에 표시
+
+  # H2 콘솔 활성화 (웹 브라우저에서 DB 확인 가능, 주소: http://localhost:5000/h2-console)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Rate Limiting 설정 (Flask-Limiter 대체)
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      # 도서 목록 조회 API에만 제한 적용
+      url: /api/books
+      method: GET
+      rate-limits:
+        - bandwidths:
+            # 1분당 30회 요청 제한
+            - capacity: 30
+              time: 1
+              unit: minutes
