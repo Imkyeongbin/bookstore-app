@@ -1,5 +1,5 @@
 server:
-  port: 8000 # Flask 포트와 동일하게 설정
+  port: 5000 # Flask 포트와 동일하게 설정
 
 spring:
   # H2 데이터베이스 설정 (SQLite 대체)
@@ -21,6 +21,12 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+  web:
+    resources:
+      # 이 설정이 정확히 추가되었는지 확인!
+      static-locations: classpath:/static/dist/
+
 
 # Rate Limiting 설정 (Flask-Limiter 대체)
 bucket4j:

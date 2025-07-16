@@ -1,6 +1,9 @@
 <template>
   <div>
     <h2>📖 책 목록</h2>
+    <div>
+      이 페이지는 Vue3 프론트엔드, Java 21 백엔드로 구성되었습니다.
+    </div>
     <div class="top-bar">
       <router-link to="/new">
         <button>➕ 새 책 등록</button>
