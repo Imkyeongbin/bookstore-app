@@ -16,7 +16,7 @@ spring:
       ddl-auto: update # 애플리케이션 시작 시 DB 스키마 자동 업데이트
     show-sql: true # 실행되는 SQL 쿼리를 로그에 표시
 
-  # H2 콘솔 활성화 (웹 브라우저에서 DB 확인 가능, 주소: http://localhost:5000/h2-console)
+  # H2 콘솔 활성화 (웹 브라우저에서 DB 확인 가능, 주소: http://localhost:8080/h2-console)
   h2:
     console:
       enabled: true

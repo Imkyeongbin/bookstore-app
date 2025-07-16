@@ -1,6 +1,6 @@
 ## 📚 Bookstore App
 책 목록을 관리하고 검색, 등록, 수정, 삭제할 수 있는 간단한 웹 애플리케이션입니다.
-Vue 3 + TypeScript 프론트엔드와 Flask 백엔드로 구성되어 있으며, SQLite 데이터베이스를 사용합니다.
+Vue 3 + TypeScript 프론트엔드와 Flask 백엔드와 SQLite 데이터베이스 혹은 JAVA 백엔드와 H2 데이터베이스로 구성되어 있습니다.
 
 ### 🔧 기술 스택
 Frontend
@@ -26,14 +26,31 @@ Flask-CORS
 ### 📦 프로젝트 구조
 
 bookstore-app/
-├── frontend/           # Vue + Vite 프론트엔드
-├── backend/            # Flask 백엔드
-│   ├── app.py
-│   ├── models.py
-│   ├── routes.py
-│   ├── db.sqlite3
-│   └── ...
 
+├── frontend/           # Vue + Vite 프론트엔드
+
+├── backend/            # Flask 백엔드
+
+│   ├── app.py
+
+│   ├── models.py
+
+│   ├── routes.py
+
+│   ├── db.sqlite3
+
+│   └── ...
+├── backend-java/src/main
+        │  │          └─dev
+        │  │              └─kyeongbin
+        │  │                  └─bookstore
+        │  │                      └─backend
+        │  │                          ├─controller
+        │  │                          ├─dto
+        │  │                          ├─model
+        │  │                          ├─repository
+        │  │                          ├─service
+        │  │                          └─util
 
 ## 🚀 설치 및 실행
 
@@ -56,7 +73,7 @@ export FLASK_ENV=development
 python app.py
 
 #### 또는 배포용 Gunicorn 실행
-gunicorn app:app --bind 0.0.0.0:8000
+gunicorn app:app --bind 0.0.0.0:8080
 기본 SQLite 데이터베이스는 앱 최초 실행 시 자동 생성되며 더미 데이터도 함께 삽입됩니다.
 
 ### 🌐 3. 프론트엔드 실행 (Vue + Vite) (Node 16 버전을 권장합니다. )
@@ -65,7 +82,7 @@ cd frontend
 npm install
 
 #### .env 파일 작성 (예:)
-echo "VITE_API_URL=http://localhost:5000" > .env
+echo "VITE_API_URL=http://localhost:8080" > .env
 
 #### 개발 서버 실행
 npm run dev
@@ -85,7 +102,7 @@ Flask에서 static 파일을 제공하도록 설정되어 있어야 함:
 
 혹은
 
-`gunicorn app:app --bind 0.0.0.0:8000` 
+`gunicorn app:app --bind 0.0.0.0:8080` 
 
 명령으로 플라스크 백엔드를 실행시켜 확인하도록 합니다.
 ### 4. 백엔드 테스트

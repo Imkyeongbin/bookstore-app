@@ -12,7 +12,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // '/api': 'http://localhost:5000',  // Flask 서버 주소
+      // '/api': 'http://localhost:8080',  // Flask 서버 주소
       // changeOrigin: true
     }
   }
