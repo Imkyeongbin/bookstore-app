@@ -29,7 +29,7 @@ app.get('*splat', (req, res) => {
 const initializeDatabase = async () => {
     try {
         // 테이블 생성 (force: true는 기존 테이블을 삭제하고 다시 만듦 - 개발용)
-        await sequelize.sync({ force: true });
+        await sequelize.sync({ force: false });
         console.log('Database synchronized successfully.');
 
         // 샘플 데이터가 없으면 생성
