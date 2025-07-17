@@ -9,7 +9,7 @@ const apiRoutes = require('./routes');
 const app = express();
 
 // 미들웨어 설정
-app.use(cors()); // CORS 허용
+// app.use(cors()); // CORS 허용
 app.use(express.json()); // JSON 요청 본문 파싱
 app.use(express.urlencoded({ extended: true })); // URL-encoded 요청 본문 파싱
 
