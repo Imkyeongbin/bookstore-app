@@ -21,7 +21,7 @@ app.use('/assets', express.static(path.join(__dirname, 'dist/assets')));
 app.use('/api', apiRoutes);
 
 // SPA를 위한 Catch-all 라우트 (API 라우트 다음에 위치해야 함)
-app.get('*', (req, res) => {
+app.get('*splat', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
@@ -49,7 +49,7 @@ const initializeDatabase = async () => {
 };
 
 // 서버 시작
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     await initializeDatabase();
