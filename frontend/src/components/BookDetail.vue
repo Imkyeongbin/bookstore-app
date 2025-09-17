@@ -1,6 +1,7 @@
 <template>
   <div class="book-detail-container">
-    <div v-if="book && !isEditing" class="card">
+    <!-- 책 정보 표시 (항상 표시) -->
+    <div v-if="book" class="card">
       <h2>📘 책 상세 정보</h2>
       <div class="info-grid">
         <p><strong>제목</strong></p><p>{{ book.title }}</p>
@@ -8,13 +9,16 @@
         <p><strong>수량</strong></p><p>{{ book.quantity }}</p>
       </div>
       <div class="button-group">
-        <button @click="isEditing = true" class="btn-edit">✏️ 수정</button>
+        <button @click="isEditing = !isEditing" class="btn-edit">
+          {{ isEditing ? '📖 정보 보기' : '✏️ 수정' }}
+        </button>
         <button @click="deleteBook" class="btn-delete">❌ 삭제</button>
         <router-link to="/" class="btn-back">← 목록으로 돌아가기</router-link>
       </div>
     </div>
 
-    <div v-else-if="book && isEditing" class="card">
+    <!-- 수정 폼 (책 정보 아래에 표시) -->
+    <div v-if="book && isEditing" class="card edit-form">
       <h2>📝 책 정보 수정</h2>
       <form @submit.prevent="updateBook">
         <div class="form-group">
@@ -36,7 +40,7 @@
       </form>
     </div>
 
-    <p v-else class="loading-message">불러오는 중...</p>
+    <p v-if="!book" class="loading-message">불러오는 중...</p>
   </div>
 </template>
 
@@ -48,7 +52,6 @@ import type { Book } from '@/types/book'
 
 const route = useRoute()
 const router = useRouter()
-
 const book = ref<Book | null>(null)
 const isEditing = ref(false)
 
@@ -68,23 +71,28 @@ watch(() => route.params.id, fetchBook)
 
 const updateBook = async () => {
   if (!book.value) return
+  
   try {
     await axios.put(`/api/books/${book.value.id}`, book.value)
     isEditing.value = false
+    alert('수정 완료!')
   } catch (err) {
     console.error('수정 실패:', err)
+    alert('수정 중 오류가 발생했습니다.')
   }
 }
 
 const deleteBook = async () => {
   if (!book.value) return
   if (!confirm("정말 삭제하시겠습니까?")) return
+  
   try {
     await axios.delete(`/api/books/${book.value.id}`)
     alert('삭제 완료')
     router.push('/')
   } catch (err) {
     console.error('삭제 실패:', err)
+    alert('삭제 중 오류가 발생했습니다.')
   }
 }
 </script>
@@ -94,7 +102,11 @@ const deleteBook = async () => {
 .book-detail-container {
   padding: 1rem;
   max-width: 800px;
-  margin: 0 auto; /* 데스크톱에서 중앙 정렬 */
+  margin: 0 auto;
+  /* 카드들 사이의 간격 추가 */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .card {
@@ -103,6 +115,24 @@ const deleteBook = async () => {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
+}
+
+/* 수정 폼에 특별한 스타일 추가 */
+.edit-form {
+  border: 2px solid #4299e1;
+  background-color: #f7fafc;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 h2 {
@@ -125,6 +155,11 @@ h2 {
   margin: 0;
 }
 
+.info-grid p:nth-child(odd) {
+  font-weight: 600;
+  color: #4a5568;
+}
+
 /* 폼 스타일 */
 .form-group {
   margin-bottom: 1rem;
@@ -142,7 +177,7 @@ h2 {
   padding: 0.75rem;
   border: 1px solid #cbd5e0;
   border-radius: 4px;
-  box-sizing: border-box; /* padding을 포함하여 width 계산 */
+  box-sizing: border-box;
   transition: border-color 0.2s;
 }
 
@@ -155,12 +190,12 @@ h2 {
 /* 버튼 스타일 */
 .button-group {
   display: flex;
-  flex-direction: column; /* 모바일: 버튼 수직 정렬 */
+  flex-direction: column;
   gap: 0.75rem;
   margin-top: 1.5rem;
 }
 
-.button-group > * { /* button, router-link 공통 스타일 */
+.button-group > * {
   display: block;
   width: 100%;
   text-align: center;
@@ -182,6 +217,7 @@ h2 {
   background-color: #3182ce;
   color: white;
 }
+
 .btn-edit:hover, .btn-save:hover {
   background-color: #2b6cb0;
 }
@@ -190,6 +226,7 @@ h2 {
   background-color: #e53e3e;
   color: white;
 }
+
 .btn-delete:hover {
   background-color: #c53030;
 }
@@ -199,6 +236,7 @@ h2 {
   color: #2d3748;
   border: 1px solid #cbd5e0;
 }
+
 .btn-back:hover, .btn-cancel:hover {
   background-color: #cbd5e0;
 }
@@ -210,15 +248,15 @@ h2 {
   padding: 2rem;
 }
 
-
 /* 💻 데스크톱 화면 스타일 (768px 이상) */
 @media (min-width: 768px) {
   .button-group {
-    flex-direction: row; /* 데스크톱: 버튼 수평 정렬 */
+    flex-direction: row;
     justify-content: flex-start;
   }
+  
   .button-group > * {
-    width: auto; /* 버튼 너비를 내용에 맞게 조절 */
+    width: auto;
   }
 }
 </style>

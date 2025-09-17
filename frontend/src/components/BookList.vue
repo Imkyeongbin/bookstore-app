@@ -18,28 +18,37 @@
       </div>
     </div>
 
-    <BookEditForm
-      v-if="isEditing && selectedBook"
-      :book-to-edit="selectedBook"
-      @edited="handleEdited"
-      @cancel="isEditing = false"
-      class="edit-form-section"
-    />
-
     <div v-if="isLoading" class="loading-message">
       <p>목록을 불러오는 중...</p>
     </div>
     <div v-else-if="books.length > 0">
       <ul class="book-list">
-        <li v-for="book in books" :key="book.id" class="book-item">
-          <router-link :to="`/books/${book.id}`" class="book-info">
-            <span class="book-title">{{ book.title }}</span>
-            <span class="book-author"> - {{ book.author }}</span>
-          </router-link>
-          <div class="book-actions">
-            <button @click="editBook(book)" class="btn btn-edit">✏️ 수정</button>
-            <button @click="deleteBook(book.id)" class="btn btn-danger">❌ 삭제</button>
+        <li v-for="book in books" :key="book.id" class="book-item-wrapper">
+          <!-- 책 정보 표시 -->
+          <div class="book-item">
+            <router-link :to="`/books/${book.id}`" class="book-info">
+              <span class="book-title">{{ book.title }}</span>
+              <span class="book-author"> - {{ book.author }}</span>
+            </router-link>
+            <div class="book-actions">
+              <button 
+                @click="editBook(book)" 
+                :class="['btn', 'btn-edit', { 'active': isEditing && selectedBook?.id === book.id }]"
+              >
+                {{ isEditing && selectedBook?.id === book.id ? '📖 정보 보기' : '✏️ 수정' }}
+              </button>
+              <button @click="deleteBook(book.id)" class="btn btn-danger">❌ 삭제</button>
+            </div>
           </div>
+          
+          <!-- 각 책 아래에 수정 폼 표시 -->
+          <BookEditForm
+            v-if="isEditing && selectedBook?.id === book.id"
+            :book-to-edit="selectedBook"
+            @edited="handleEdited"
+            @cancel="cancelEdit"
+            class="edit-form-inline"
+          />
         </li>
       </ul>
     </div>
@@ -132,8 +141,18 @@ const deleteBook = async (id: number): Promise<void> => {
 }
 
 const editBook = (book: Book): void => {
-  selectedBook.value = { ...book } // 원본 수정을 방지하기 위해 복사본 전달
-  isEditing.value = true
+  // 같은 책을 다시 클릭하면 수정 모드 토글
+  if (isEditing.value && selectedBook.value?.id === book.id) {
+    cancelEdit()
+  } else {
+    selectedBook.value = { ...book } // 원본 수정을 방지하기 위해 복사본 전달
+    isEditing.value = true
+  }
+}
+
+const cancelEdit = (): void => {
+  isEditing.value = false
+  selectedBook.value = null
 }
 
 const handleEdited = async (): Promise<void> => {
@@ -188,12 +207,24 @@ h2 {
   margin: 0;
 }
 
+.book-item-wrapper {
+  margin-bottom: 0.5rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.book-item-wrapper:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .book-item {
   display: flex;
   flex-direction: column; /* 모바일: 수직 정렬 */
   gap: 0.75rem;
   padding: 1rem;
-  border-bottom: 1px solid #eee;
+  background-color: white;
   transition: background-color 0.2s;
 }
 
@@ -217,6 +248,29 @@ h2 {
 .book-actions {
   display: flex;
   gap: 0.5rem;
+}
+
+/* 수정 폼 인라인 스타일 */
+.edit-form-inline {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
 }
 
 /* 공통 버튼 스타일 */
@@ -264,6 +318,13 @@ h2 {
 }
 .btn-edit:hover { background-color: #555; }
 
+.btn-edit.active {
+  background-color: #4299e1;
+  border-color: #4299e1;
+}
+.btn-edit.active:hover {
+  background-color: #3182ce;
+}
 
 /* 페이지네이션 */
 .pagination {
@@ -278,14 +339,6 @@ h2 {
   text-align: center;
   padding: 2rem;
   color: #777;
-}
-
-.edit-form-section {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fafafa;
 }
 
 /* 💻 데스크톱 화면 스타일 (768px 이상) */
