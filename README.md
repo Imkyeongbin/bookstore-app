@@ -128,7 +128,7 @@ gradlew build
 ```
 
 4. 배포 및 실행
-build/libs/ 폴더에 생성된 .jar 파일을 서버로 옮긴 후 아래 명령어로 실행합니다.
+build/libs/ 폴더에 생성된 .jar 파일을 서버(포트폴리오 서버 => /home/lucas/programming/bookstore-app/backend-java/bookstore-backend/build/libs)로 옮긴 후 아래 명령어로 실행합니다.
 
 
 ```
