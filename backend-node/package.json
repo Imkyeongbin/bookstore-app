@@ -1,0 +1,16 @@
+{
+  "name": "book-api-express",
+  "version": "1.0.0",
+  "description": "북스토어 앱 with Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },"dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  }
+}

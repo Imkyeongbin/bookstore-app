@@ -15,11 +15,19 @@
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+<<<<<<< HEAD
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^5.1.1",
     "cypress": "^14.2.1",
     "typescript": "^5.8.2",
     "vite": "^7.1.5",
+=======
+    "@vitejs/plugin-vue": "^5.0.0",
+    "@vitejs/plugin-vue-jsx": "^4.1.2",
+    "cypress": "^14.2.1",
+    "typescript": "^5.8.2",
+    "vite": "^5.0.0",
+>>>>>>> a75fc62926e04b07997c486782f829e7c3385f17
     "vue-tsc": "^2.2.8"
   },
   "engines": {
