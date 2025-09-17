@@ -35,7 +35,7 @@
                 @click="editBook(book)" 
                 :class="['btn', 'btn-edit', { 'active': isEditing && selectedBook?.id === book.id }]"
               >
-                {{ isEditing && selectedBook?.id === book.id ? '📖 정보 보기' : '✏️ 수정' }}
+                {{ isEditing && selectedBook?.id === book.id ? '⏹️ 변경 중지' : '✏️ 수정' }}
               </button>
               <button @click="deleteBook(book.id)" class="btn btn-danger">❌ 삭제</button>
             </div>
@@ -319,11 +319,12 @@ h2 {
 .btn-edit:hover { background-color: #555; }
 
 .btn-edit.active {
-  background-color: #4299e1;
-  border-color: #4299e1;
+  background-color: #f6ad55;
+  border-color: #f6ad55;
+  color: #1a202c;
 }
 .btn-edit.active:hover {
-  background-color: #3182ce;
+  background-color: #ed8936;
 }
 
 /* 페이지네이션 */
